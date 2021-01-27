@@ -5,7 +5,7 @@ import sys
 import streamlit as st
 from matplotlib import pyplot
 from matplotlib.font_manager import FontProperties
-bondfromcsv=pd.read_csv('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/twbond2',names=['ID','Name','Duration','MaturityYear','High','Low','Average','recorddate'],parse_dates=['recorddate'],infer_datetime_format='%Y-%M-%D')
+bondfromcsv=pd.read_csv('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/twbond',names=['ID','Name','Duration','MaturityYear','High','Low','Average','recorddate'],parse_dates=['recorddate'],infer_datetime_format='%Y-%M-%D')
 bondfromcsv=bondfromcsv.astype({"ID":str, "Name":str})
 querybond=st.text_input('input the bond id')
 st.write("No trade record")
