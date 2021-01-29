@@ -25,9 +25,9 @@ if (st.button('Hit me')):
     fig = pyplot.figure()
     ax = fig.add_subplot(1,1,1)
 #    axes[0,0].tick_params(labelrotation=45)
-    ax.scatter(target.recorddate,target.Average,c='g')
-    ax.scatter(upper.recorddate,upper.Average,c='r')
-    ax.scatter(lower.recorddate,lower.Average,c='b')
+    ax.scatter(target.recorddate,target.Average,c='g',s=5**2)
+    ax.scatter(upper.recorddate,upper.Average,c='r',s=2**2)
+    ax.scatter(lower.recorddate,lower.Average,c='b',s=2**)
     
     
     st.pyplot(fig)
