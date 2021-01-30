@@ -30,9 +30,9 @@ if (st.button('Hit me')):
     st.subheader("相近天期成交記錄")
     col1,col2=st.beta_columns(2)
     with col1:
-      st.table(upper)
+      st.table(upper[0,1,2,6])
     with col2:
-      st.table(lower)
+      st.table(lower[0,1,2,6])
     pyplot.ion()
     fig = pyplot.figure()
     
