@@ -3,37 +3,55 @@ import datetime
 import pandas as pd
 import sys
 import streamlit as st
+import numpy as np
 from matplotlib import pyplot
 from matplotlib.font_manager import FontProperties
+st.title('台債市場交易查詢')
 bondfromcsv=pd.read_csv('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/twbond',names=['ID','Name','Duration','MaturityYear','High','Low','Average','recorddate'],parse_dates=['recorddate'],infer_datetime_format='%Y-%M-%D')
 bondfromcsv=bondfromcsv.astype({"ID":str, "Name":str})
 twgovbondlist=pd.read_csv('twgovbondlist')
 twcorpbondlist=pd.read_csv('twcorpbondlist')
-querybond=st.text_input('input the bond id')
-
-if (st.button('Hit me')):
-  intwgovbond=twgovbondlist[twgovbondlist['ID']==querybond]
-  intwcorpbond=twcorpbondlist[twcorpbondlist['ID']==querybond]
+bondfromcsv=pd.merge(bondfromcsv,twcorpbondlist,how='left',on='ID')
+bondfromcsv=bondfromcsv[['ID','Name_x','Rating','Duration','MaturityYear','Average','recorddate']]
+bondfromcsv=bondfromcsv.fillna('twAAA')
+bondfromcsv.rename(columns={"Name_x":"Name"},inplace=True)
+querybond=st.sidebar.text_input('請輸入券號')
+duration_diff=st.sidebar.slider("存續期間差異", min_value=0.0, max_value=5.0, value=1.0,step=0.1)
+start_date=st.sidebar.slider("資料期間", min_value=0, max_value=90, value=30,step=1)
+if (st.sidebar.button('查詢')):   
+  if querybond.startswith('A'):
+    govtcondition=bondfromcsv.ID.map(lambda x: x.startswith('A'))
+    inbond=twgovbondlist[twgovbondlist['ID']==querybond]
+    
+  else:
+    govtcondition=bondfromcsv.ID.map(lambda x: not x.startswith('A'))
+    inbond=twcorpbondlist[twcorpbondlist['ID']==querybond]
   st.header("Bloomberg 公平市價")
-  st.table(intwgovbond)
-  govtcondition=bondfromcsv.ID.map(lambda x: x.startswith('A'))
-  target=bondfromcsv[bondfromcsv['ID']==querybond]
+  st.table(inbond)
+  first_record_date=np.datetime64((datetime.date.today()-datetime.timedelta(start_date)))
+#  target=bondfromcsv[bondfromcsv['ID']==querybond & bondfromcsv['recorddate']>=(np.datetime64((datetime.date.today()-datetime.timedelta(start_date))))]
+  target=bondfromcsv[(bondfromcsv['ID']==querybond) & (bondfromcsv['recorddate']>=first_record_date)]
   if target.size==0:
     st.write("No trade record")
   else:
     pyplot.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] 
     st.subheader("本券近期成交記錄")
     st.table(target)
-    targetduration=target['Duration'].values[-1]
-    upper=bondfromcsv[ (bondfromcsv['Duration']>targetduration) & (bondfromcsv['Duration']<(targetduration+1)) & (bondfromcsv['ID']!=querybond) & govtcondition]
-    lower=bondfromcsv[ (bondfromcsv['Duration']<targetduration) & (bondfromcsv['Duration']>(targetduration-1)) & (bondfromcsv['ID']!=querybond) & govtcondition]
-    st.subheader("相近天期成交記錄")
-    col1,col2=st.beta_columns(2)
-    with col1:
-      st.table(upper[0,1,2,6])
-    with col2:
-      st.table(lower[0,1,2,6])
-    pyplot.ion()
+    
+    if querybond.startswith('A'):
+      targetduration=inbond.Duration.item()
+    else :
+      targetduration=target['Duration'].values[-1]
+    upper=bondfromcsv[ (bondfromcsv['Duration']>targetduration) & (bondfromcsv['Duration']<(targetduration+duration_diff)) & (bondfromcsv['ID']!=querybond) & govtcondition & (bondfromcsv['recorddate']>=first_record_date) & (bondfromcsv['Rating']==target['Rating'].values[-1])]
+    lower=bondfromcsv[ (bondfromcsv['Duration']<targetduration) & (bondfromcsv['Duration']>(targetduration-duration_diff)) & (bondfromcsv['ID']!=querybond) & govtcondition &(bondfromcsv['recorddate']>=first_record_date) & (bondfromcsv['Rating']==target['Rating'].values[-1])]
+    st.subheader("相近存續天期成交記錄")
+  #  col1,col2=st.beta_columns(2)
+  #  with col1:
+  #    st.table(upper[['ID','Name','Duration','Average']])
+  #  with col2:
+  #    st.table(lower[['ID','Name','Duration','Average']])
+    st.table(upper[['ID','Name','Duration','Average']])
+    st.table(lower[['ID','Name','Duration','Average']])
     fig = pyplot.figure()
     
     ax = fig.add_subplot(1,1,1)
