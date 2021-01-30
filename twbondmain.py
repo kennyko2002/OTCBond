@@ -28,7 +28,7 @@ if (st.button('Hit me')):
     upper=bondfromcsv[ (bondfromcsv['Duration']>targetduration) & (bondfromcsv['Duration']<(targetduration+1)) & (bondfromcsv['ID']!=querybond) & govtcondition]
     lower=bondfromcsv[ (bondfromcsv['Duration']<targetduration) & (bondfromcsv['Duration']>(targetduration-1)) & (bondfromcsv['ID']!=querybond) & govtcondition]
     st.subheader("相近天期成交記錄")
-    col1,col2=st.betacolumns(2)
+    col1,col2=st.beta_columns(2)
     with col1:
       st.table(upper)
     with col2:
