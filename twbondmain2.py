@@ -89,10 +89,10 @@ else:
         st.title('Philippines Bond Market')
         bondtype=st.radio('Govt/Corp?',('Govt','Corp'))
         if bondtype=='Govt':
-          bondfromcsv=pd.read_csv('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/phigovt',names=['Global ID', 'Local ID', 'Domestic No.', 'CPN','YRS','Maturity', 'D. Vol (MM)', 'Last Yield','recorddate'],parse_dates=['recorddate'],infer_datetime_format='%Y-%M-%D')
+          bondfromcsv=pd.read_csv('phigovt',names=['Global ID', 'Local ID', 'Domestic No.', 'CPN','YRS','Maturity', 'D. Vol (MM)', 'Last Yield','recorddate'],parse_dates=['recorddate'],infer_datetime_format='%Y-%M-%D')
           bondfromcsv=bondfromcsv.rename(columns={'D. Vol (MM)':'D.Vol(MM)'})
         else:
-          bondfromcsv=pd.read_csv('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/phicorp',names=['Global ID', 'Local ID', 'Domestic No.', 'Coupon Rate','YTM','Maturity', 'D.Vol(MM)', 'Last Yield','recorddate'],parse_dates=['recorddate'],infer_datetime_format='%Y-%M-%D')
+          bondfromcsv=pd.read_csv('phicorp',names=['Global ID', 'Local ID', 'Domestic No.', 'Coupon Rate','YTM','Maturity', 'D.Vol(MM)', 'Last Yield','recorddate'],parse_dates=['recorddate'],infer_datetime_format='%Y-%M-%D')
           bondfromcsv=bondfromcsv.rename(columns={'YTM':'YRS'})  
         bondfromcsv=bondfromcsv.astype({"YRS":float})
 	#bondfromcsv=bondfromcsv.astype({"ID":str, "Name":str})
@@ -104,8 +104,8 @@ else:
 	#bondfromcsv.rename(columns={"Name_x":"Name"},inplace=True)
         bondfromcsv.sort_values(by='recorddate',ascending=False,inplace=True)
         querybond=st.sidebar.selectbox('Global ID',np.sort(bondfromcsv['Global ID'].unique()))
-        duration_diff=st.sidebar.slider("tenor_diff", min_value=0.0, max_value=5.0, value=1.0,step=0.1)
-        start_date=st.sidebar.slider("number of days", min_value=0, max_value=90, value=30,step=1)
+        duration_diff=st.sidebar.slider("存續期間差異", min_value=0.0, max_value=5.0, value=1.0,step=0.1)
+        start_date=st.sidebar.slider("資料期間", min_value=0, max_value=90, value=30,step=1)
 
         st.markdown("""
 	<style>
