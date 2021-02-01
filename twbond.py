@@ -49,7 +49,7 @@ url='https://www.pds.com.ph/wp-content/uploads/'+record.strftime("%Y")+'/'+recor
 try:
   df = read_pdf(url,multiple_tables=False,pages = 'all')
   df=pd.DataFrame(df[0])
-　df['recorddate']=record
+  df['recorddate']=record
   df=df[['Global ID', 'Local ID', 'Domestic No.', 'CPN','YRS','Maturity', 'D. Vol (MM)', 'Last Yield','recorddate']]
   df=df.dropna(subset=['Last Yield'])
   df=df[df['Global ID']!='Global ID']
@@ -59,12 +59,12 @@ except:
 #phi corp
 url='https://www.pds.com.ph/wp-content/uploads/'+record.strftime("%Y")+'/'+record.strftime("%m")+'/corp_board_summary_'+record.strftime("%Y")+'-'+record.strftime("%m")+'-'+record.strftime("%d")+'.csv'
 try:
-    df=pd.read_csv(url)
-    df['recorddate']=record    
-    df=df[['Global ID', 'Local ID', 'Domestic No.', 'Coupon Rate','YTM','Maturity', 'D.Vol(MM)', 'Last Yield','recorddate']]
-    df.replace('-',np.NaN,inplace=True)
-    df=df.dropna(subset=['Last Yield'])    
-    df.to_csv('phicorp',mode='a',index=False,header=None) 
+  df=pd.read_csv(url)
+  df['recorddate']=record    
+  df=df[['Global ID', 'Local ID', 'Domestic No.', 'Coupon Rate','YTM','Maturity', 'D.Vol(MM)', 'Last Yield','recorddate']]
+  df.replace('-',np.NaN,inplace=True)
+  df=df.dropna(subset=['Last Yield'])    
+  df.to_csv('phicorp',mode='a',index=False,header=None) 
 except:
   print("no data"+record.strftime("%Y%m%d"))
 

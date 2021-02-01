@@ -77,14 +77,15 @@ if country=='Taiwan':
 	  s2=ax.scatter(upper.recorddate,upper.Average,c='r',s=2**2,marker='X')
 	  s3=ax.scatter(lower.recorddate,lower.Average,c='b',s=2**2,marker='X')	    
 	  if target.size>0:
-	   s1=ax.scatter(target.recorddate,target.Average,c='g',s=5**2,marker='D')
-	   fig.legend(
+	    s1=ax.scatter(target.recorddate,target.Average,c='g',s=5**2,marker='D')
+	    fig.legend(
 	    handles=(s1, s2, s3),labels=(querybond, 'longer bond', 'short bond'),loc='upper left',bbox_to_anchor=(0.13,0.87))
-	  
+	  else:
+	    fig.legend(
+	    handles=(s2, s3),labels=('longer bond', 'short bond'),loc='upper left',bbox_to_anchor=(0.13,0.87))
 	  ax.grid(axis='y')
 	  fig.autofmt_xdate(bottom=0.2, rotation=30, ha='right')
-	  fig.legend(
-	    handles=(s2, s3),labels=('longer bond', 'short bond'),loc='upper left',bbox_to_anchor=(0.13,0.87))
+
 	    
 	    
 	  st.pyplot(fig)
