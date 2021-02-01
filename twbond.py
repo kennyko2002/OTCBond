@@ -15,7 +15,7 @@ except:
 #處所
 url='https://www.tpex.org.tw/storage/bond_zone/tradeinfo/govbond//' + record.strftime("%Y") + '/'+ record.strftime("%Y%m") + '/BDdcs001.'+ record.strftime("%Y%m%d") +'-C.xls'
 try:
-  x=pd.read_excel(url,skiprows=4,header=None,usecols=[0,1,2,3,9,10,11],names=['ID','Name','Duration','TimeToMaturity','High','Low','Average'])
+  x=pd.read_excel(url,skiprows=4,header=None,usecols=[0,1,3,4,8,9,10],names=['ID','Name','Duration','TimeToMaturity','High','Low','Average'])
   y=x[x.Name.notna()]
   y['recorddate']=record
   y.to_csv('twbond',mode='a',index=False,header=False)
