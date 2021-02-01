@@ -18,7 +18,7 @@ if country=='Taiwan':
 	bondfromcsv=bondfromcsv.fillna('twAAA')
 	bondfromcsv.rename(columns={"Name_x":"Name"},inplace=True)
 	bondfromcsv.sort_values(by='recorddate',ascending=False,inplace=True)
-	querytype=st.radio('query type',('By ID','By Issuer'))	
+	querytype=st.sidebar.radio('query type',('By ID','By Issuer','By Tenor'))	
 	if querytype=='By ID':
 	  querybond=st.sidebar.text_input('請輸入券號')
 	  duration_diff=st.sidebar.slider("存續期間差異", min_value=0.0, max_value=5.0, value=1.0,step=0.1)
@@ -88,8 +88,29 @@ if country=='Taiwan':
 	    ax.grid(axis='y')
 	    fig.autofmt_xdate(bottom=0.2, rotation=30, ha='right')   
 	    st.pyplot(fig)
-	else:
+	elif querytype=='By Issuer':
 	  st.write('By Issuer')
+	else:
+	  tenor=st.sidebar.slider("債券天期", min_value=0, max_value=30, value=(1,5),step=0.1)
+	  start_date=st.sidebar.slider("資料期間", min_value=0, max_value=90, value=30,step=1)
+	  if (st.sidebar.button('查詢')):
+	    if querybond.startswith('A'):
+	      govtcondition=bondfromcsv.ID.map(lambda x: x.startswith('A'))
+	      inbond=twgovbondlist[twgovbondlist['ID']==querybond]
+	    
+	    else:
+	      govtcondition=bondfromcsv.ID.map(lambda x: not x.startswith('A'))
+	      inbond=twcorpbondlist[twcorpbondlist['ID']==querybond]
+
+	    first_record_date=np.datetime64((datetime.date.today()-datetime.timedelta(start_date)))
+	#  target=bondfromcsv[bondfromcsv['ID']==querybond & bondfromcsv['recorddate']>=(np.datetime64((datetime.date.today()-datetime.timedelta(start_date))))]
+	    target=bondfromcsv[(bondfromcsv['Duration']>tenor(0)) & (bondfromcsv['Duration']<tenor(1)) & (bondfromcsv['recorddate']>=first_record_date)]
+	    if target.size==0:
+	      st.write("No trade record")
+	    else:
+	      pyplot.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] 
+	      st.subheader("本券近期成交記錄")
+	      st.table(target)    
 else:
         st.title('Philippines Bond Market')
         bondtype=st.radio('Govt/Corp?',('Govt','Corp'))
