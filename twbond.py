@@ -2,6 +2,7 @@ import datetime
 import pandas as pd
 import sys
 from tabula import read_pdf
+import numpy as np
 record=datetime.date.today()
 #等殖
 url='https://www.tpex.org.tw/storage/bond_zone/tradeinfo/govbond//' + record.strftime("%Y") + '/'+ record.strftime("%Y%m") + '/BDdys01a.'+ record.strftime("%Y%m%d") +'-C.xls'
@@ -66,6 +67,6 @@ try:
   df=df.dropna(subset=['Last Yield'])    
   df.to_csv('phicorp',mode='a',index=False,header=None) 
 except:
-  print("no data"+record.strftime("%Y%m%d"))
+  print("no corp data"+record.strftime("%Y%m%d"))
 
 

@@ -1,23 +1,20 @@
 import datetime
 import pandas as pd
 import sys
+import numpy as np
 for i in range(120):
     
     time_delta = datetime.timedelta(days=i)
     record=datetime.date.today()-time_delta
-    url='https://www.tpex.org.tw/storage/bond_zone/tradeinfo/govbond//' + record.strftime("%Y") + '/'+ record.strftime("%Y%m") + '/BDdys01a.'+ record.strftime("%Y%m%d") +'-C.xls'
+    url='https://www.pds.com.ph/wp-content/uploads/'+record.strftime("%Y")+'/'+record.strftime("%m")+'/corp_board_summary_'+record.strftime("%Y")+'-'+record.strftime("%m")+'-'+record.strftime("%d")+'.csv'
     try:
-        x=pd.read_excel(url,skiprows=4,header=None,usecols=[0,1,2,3,9,10,11],names=['ID','Name','Duration','MaturityYear','High','Low','Average'])
-        y=x[x.Name.notna()]
-        y['recorddate']=record
-        y.to_csv('twbond',mode='a',index=False,header=False)
+      df=pd.read_csv(url)
+      df['recorddate']=record    
+      df=df[['Global ID', 'Local ID', 'Domestic No.', 'Coupon Rate','YTM','Maturity', 'D.Vol(MM)', 'Last Yield','recorddate']]
+      df.replace('-',np.NaN,inplace=True)
+      df=df.dropna(subset=['Last Yield'])    
+      df.to_csv('phicorp',mode='a',index=False,header=None) 
     except:
-        print("no data"+record.strftime("%Y%m%d"))
-    url='https://www.tpex.org.tw/storage/bond_zone/tradeinfo/govbond//' + record.strftime("%Y") + '/'+ record.strftime("%Y%m") + '/BDdcs001.'+ record.strftime("%Y%m%d") +'-C.xls'
-    try:
-        x=pd.read_excel(url,skiprows=4,header=None,usecols=[0,1,3,4,8,9,10],names=['ID','Name','Duration','MaturityYear','High','Low','Average'])
-        y=x[x.Name.notna()]
-        y['recorddate']=record
-        y.to_csv('twbond',mode='a',index=False,header=False)
-    except:
-        print("no data"+record.strftime("%Y%m%d"))
+      print("no corp data"+record.strftime("%Y%m%d"))
+
+

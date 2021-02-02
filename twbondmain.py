@@ -13,8 +13,11 @@ if country=='Taiwan':
 	bondfromcsv=bondfromcsv.astype({"ID":str, "Name":str})
 	twgovbondlist=pd.read_csv('twgovbondlist')
 	twcorpbondlist=pd.read_csv('twcorpbondlist')
+	corplistpro=pd.read_csv('corplistpro',names=['ID','Ticker','FullName'])
+
 	bondfromcsv=pd.merge(bondfromcsv,twcorpbondlist,how='left',on='ID')
-	bondfromcsv=bondfromcsv[['ID','Name_x','Rating','Duration','MaturityYear','Average','recorddate']]
+	bondfromcsv=pd.merge(bondfromcsv,corplistpro,how='left',on='ID')
+	bondfromcsv=bondfromcsv[['ID','Name_x','Rating','Duration','MaturityYear','Average','recorddate','FullName']]
 	bondfromcsv=bondfromcsv.fillna('twAAA')
 	bondfromcsv.rename(columns={"Name_x":"Name"},inplace=True)
 	bondfromcsv.sort_values(by='recorddate',ascending=False,inplace=True)
@@ -89,7 +92,8 @@ if country=='Taiwan':
 	    fig.autofmt_xdate(bottom=0.2, rotation=30, ha='right')   
 	    st.pyplot(fig)
 	elif querytype=='By Issuer':
-	  st.write('By Issuer')
+	  issuername=st.selectbox('By Issuer',bondfromcsv.FullName.unique())
+	  st.table( bondfromcsv[bondfromcsv.FullName==issuername])
 	else:
 	  tenor=st.sidebar.slider("債券天期", min_value=0.0, max_value=30.0, value=(1.0,5.0),step=0.1)
 	  start_date=st.sidebar.slider("資料期間", min_value=0, max_value=90, value=30,step=1)
