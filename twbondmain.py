@@ -118,7 +118,7 @@ else:
           bondfromcsv=pd.read_csv('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/phicorp',names=['Global ID', 'Local ID', 'Domestic No.', 'Coupon Rate','YTM','Maturity', 'D.Vol(MM)', 'Last Yield','recorddate'],parse_dates=['recorddate'],infer_datetime_format='%Y-%M-%D')
           bondfromcsv=bondfromcsv.rename(columns={'YTM':'YRS'})
           bondfromcsv['Ticker']=bondfromcsv['Global ID'].map(lambda x :x.split(' ')[0])
-          phi_issuer_list=pd.read_csv('phitest',names=['corpname','key'])
+          phi_issuer_list=pd.read_csv('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/phitest',names=['corpname','key'])
           bondfromcsv['key']=bondfromcsv['Local ID'].str.replace(' ','')
           bondfromcsv=bondfromcsv.join(phi_issuer_list.set_index('key'),how='left',on='key')
           querytype=st.sidebar.radio('query type',('By ID','By Issuer','By Tenor'))
