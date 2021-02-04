@@ -87,4 +87,23 @@ for url in urls:
   yy=yy[[0,1,2]]
   yy.to_csv('corplistpro',mode='a',index=False,header=None)
 
+#phi issur list
+url='https://www.pds.com.ph/wp-content/uploads/'+record.strftime("%Y")+'/'+record.strftime("%m")+'/Listed-Securities-as-of-'+record.strftime("%b")+'-'+record.strftime("%d")+'-'+record.strftime("%Y")+'.pdf'
+try:
+  df = read_pdf(url,multiple_tables=False,pages = 'all',lattice=True)
+  df=pd.DataFrame(df[0])
+  df['recorddate']=record
+  df=df.iloc[5:,[0,2]]
+  df=df.dropna()
+  df2=df.replace({r'\r': ''}, regex=True)
+  df2.rename(columns={'Unnamed: 0':'Corpname','Unnamed: 2':'key'},inplace=True)
+  df2['key']=df2['key'].str.replace(' ','')
+  df2.to_csv('phitest',header=None)
+except:
+  print("no phi issur list"+record.strftime("%Y%m%d"))
+
+
+
+
+
 
