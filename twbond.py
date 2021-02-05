@@ -4,12 +4,13 @@ import sys
 from tabula import read_pdf
 import numpy as np
 import urllib.request
+import os
 from bs4 import BeautifulSoup
 record=datetime.date.today()
 #等殖
 url='https://www.tpex.org.tw/storage/bond_zone/tradeinfo/govbond//' + record.strftime("%Y") + '/'+ record.strftime("%Y%m") + '/BDdys01a.'+ record.strftime("%Y%m%d") +'-C.xls'
 try:
-  x=pd.read_excel(url,skiprows=4,header=None,usecols=[0,1,2,3,9,10,11],names=['ID','Name','Duration','TimeToMaturity','High','Low','Average'])
+  x=pd.read_excel(url,skiprows=4,header=None,usecols=[0,1,2,3,9,11,15],names=['ID','Name','Duration','TimeToMaturity','High','Average','Volume'])
   y=x[x.Name.notna()]
   y['recorddate']=record
   y.to_csv('twbond',mode='a',index=False,header=False)
@@ -18,9 +19,10 @@ except:
 #處所
 url='https://www.tpex.org.tw/storage/bond_zone/tradeinfo/govbond//' + record.strftime("%Y") + '/'+ record.strftime("%Y%m") + '/BDdcs001.'+ record.strftime("%Y%m%d") +'-C.xls'
 try:
-  x=pd.read_excel(url,skiprows=4,header=None,usecols=[0,1,3,4,8,9,10],names=['ID','Name','Duration','TimeToMaturity','High','Low','Average'])
+  x=pd.read_excel(url,skiprows=4,header=None,usecols=[0,1,3,4,8,10,13],names=['ID','Name','Duration','TimeToMaturity','High','Average','Volume'])
   y=x[x.Name.notna()]
   y['recorddate']=record
+  y['Volume']=y['Volume']/100000000
   y.to_csv('twbond',mode='a',index=False,header=False)
 except:
   print("no data"+record.strftime("%Y%m%d"))
@@ -73,6 +75,7 @@ except:
 
 
 urls=['https://www.tpex.org.tw/web/bond/publish/corporate_bond_search/memo_professional.php?l=zh-tw','https://www.tpex.org.tw/web/bond/publish/corporate_bond_search/memo.php?l=zh-tw']
+os.remove("demofile.txt") 
 for url in urls:
   response = urllib.request.urlopen(url)
   html = response.read()
