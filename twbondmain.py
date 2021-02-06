@@ -43,9 +43,11 @@ text-align:center;}
 
 .reportview-container .table-bottom-left,.reportview-container .dataframe.row-header,.reportview-container .dataframe.corner{
 background:#ecead0;
-width:5px;}
-.reportview-container .element-container{border-radius:50px;}
-.dataframe-container{width:800px}	
+font-weight:900;
+color:#394a28 ;
+}
+  	
+
 	</style>
 	""", unsafe_allow_html=True)
 
