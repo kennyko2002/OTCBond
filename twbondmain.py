@@ -40,15 +40,19 @@ text-align:center;}
 .table-bottom-left > div:nth-child(1){
 	    display: none;            
 	}
-.table-bottom-left{
-background-color:#c3c95a;	
+
+.reportview-container .table-bottom-left,.reportview-container .dataframe.row-header,.reportview-container .dataframe.corner{
+background:#ecead0;
+width:5px;}
+.reportview-container .element-container{border-radius:50px;}
+.dataframe-container{width:800px}	
 	</style>
 	""", unsafe_allow_html=True)
 
 
 
 
-mycss()
+
 if country=='Taiwan':
 	st.title('台債市場交易查詢')
 	bondfromcsv=st.cache(pd.read_csv)('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/twbond',names=['ID','Name','Duration','MaturityYear','High','YTM','VolumeE','Trade_date'],thousands=r',',parse_dates=['Trade_date'],infer_datetime_format='%Y-%M-%D')
@@ -210,7 +214,7 @@ else:
            outputtable=outputtable[['Global ID', 'Local ID', 'YRS', 'D.Vol(MM)', 'YTM','Trade_date']]
            if outputtable.size>0:         
              #st.table( outputtable.sort_values(by='Trade_date',ascending=False))
-              st.dataframe(outputtable.sort_values(by='Trade_date',ascending=False))
+              st.dataframe(outputtable.sort_values(by='Trade_date',ascending=False),width=1000)
            else:
              st.write("No trade record")
         else :
@@ -226,6 +230,6 @@ else:
                st.subheader("trade record")
                target=target[['Global ID', 'Local ID', 'YRS', 'D.Vol(MM)', 'YTM','Trade_date']]
                st.table(target.sort_values(by='Trade_date',ascending=False))
-
+mycss()
             
 
