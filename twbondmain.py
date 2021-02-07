@@ -6,17 +6,24 @@ import streamlit as st
 import numpy as np
 from matplotlib import pyplot
 from matplotlib.font_manager import FontProperties
+showtype=st.sidebar.radio('Present in ?',('Table','Dataframe'))
 country=st.sidebar.radio('Which country?',('Taiwan','Philippines'))
 issuername=''
 start_date=30
 first_record_date=np.datetime64((datetime.date.today()-datetime.timedelta(start_date)))
 pd.options.display.float_format='{:,.3f}'.format
+
 pyplot.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] 
-
-
+def show_data(dataframe,showtype):
+  if showtype=='Table':
+      st.table(dataframe)
+      if dataframe.size==0: st.write("No trade record")
+  else :
+      st.dataframe(dataframe)
+      if dataframe.size==0: st.write("No trade record")
 def mycss():           
   st.markdown("""	<style>		
-        .main {background:linear-gradient(to top right,#c3c95a,#c4b281);}
+        .main {background:linear-gradient(to top right,#c4b281,#a99e60);}
 table {
 background:white;
 background:linear-gradient(to bottom right,rgba(255,255,255,0.7),rgba(255,255,255,0.3) );
@@ -24,6 +31,8 @@ border-radius:50px;
 font-weight:bold;
 white-space:nowrap;
 	}
+.sidebar .sidebar-content{background:linear-gradient(to top left,#a99e60,#ffffff);}
+
 
 h1,h2,h3{
 text-align:center;}
@@ -38,14 +47,15 @@ text-align:center;}
 	    display: none
 	}
 .table-bottom-left > div:nth-child(1){
-	    display: none;            
+	               
 	}
 
-.reportview-container .table-bottom-left,.reportview-container .dataframe.row-header,.reportview-container .dataframe.corner{
-background:#ecead0;
+.reportview-container .dataframe.col-header,.reportview-container .dataframe.row-header,.reportview-container .dataframe.corner{
+background:transparent;
 font-weight:900;
 color:#394a28 ;
 }
+.reportview-container{background:transparent;}
   	
 
 	</style>
@@ -87,7 +97,7 @@ if country=='Taiwan':
 	    else:
 	      govtcondition=bondfromcsv.ID.map(lambda x: not x.startswith('A'))
 	      inbond=twcorpbondlist[twcorpbondlist['ID']==querybond]
-	    st.header("Bloomberg 公平市價")
+	    st.subheader("Bloomberg 公平市價")
 	    st.table(inbond)
 	    first_record_date=np.datetime64((datetime.date.today()-datetime.timedelta(start_date)))
 	#  target=bondfromcsv[bondfromcsv['ID']==querybond & bondfromcsv['Trade_date']>=(np.datetime64((datetime.date.today()-datetime.timedelta(start_date))))]
@@ -96,46 +106,53 @@ if country=='Taiwan':
 	      st.write("No trade record")
 	    else:
 	      st.subheader("本券近期成交記錄")
-	      st.table(target[['ID','Name','Duration','YTM','Trade_date']])    
-	    if querybond.startswith('A'):
+	      show_data(target[['ID','Name','Duration','YTM','VolumeE','Trade_date']],showtype)    
+	    if querybond.startswith('A') & (inbond.size>0):
 	      targetduration=inbond.Duration.item()
 	      upper=bondfromcsv[ (bondfromcsv['Duration']>targetduration) & (bondfromcsv['Duration']<(targetduration+duration_diff)) & (bondfromcsv['ID']!=querybond) & govtcondition & (bondfromcsv['Trade_date']>=first_record_date) ]
 	      lower=bondfromcsv[ (bondfromcsv['Duration']<targetduration) & (bondfromcsv['Duration']>(targetduration-duration_diff)) & (bondfromcsv['ID']!=querybond) & govtcondition &(bondfromcsv['Trade_date']>=first_record_date) ]              
-	    else :
+	    elif target.size>0 :
 	      targetduration=target['Duration'].values[0]
 	      upper=bondfromcsv[ (bondfromcsv['Duration']>targetduration) & (bondfromcsv['Duration']<(targetduration+duration_diff)) & (bondfromcsv['ID']!=querybond) & govtcondition & (bondfromcsv['Trade_date']>=first_record_date) & (bondfromcsv['Rating']==target['Rating'].values[0])]
 	      lower=bondfromcsv[ (bondfromcsv['Duration']<targetduration) & (bondfromcsv['Duration']>(targetduration-duration_diff)) & (bondfromcsv['ID']!=querybond) & govtcondition &(bondfromcsv['Trade_date']>=first_record_date) & (bondfromcsv['Rating']==target['Rating'].values[0])]
+	    else: 
+	      upper=pd.DataFrame()
+	      lower=pd.DataFrame()
 	    st.subheader("相近(存續)天期成交記錄")
 	  #  col1,col2=st.beta_columns(2)
 	  #  with col1:
-	  #    st.table(upper[['ID','Name','Duration','YTM']])
+	  #    show_data(upper[['ID','Name','Duration','YTM']])
 	  #  with col2:
-	  #    st.table(lower[['ID','Name','Duration','YTM']])
-	    st.table(upper[['ID','Name','Duration','YTM','Trade_date']])
-	    st.table(lower[['ID','Name','Duration','YTM','Trade_date']])
+	  #    show_data(lower[['ID','Name','Duration','YTM']])
+	    
+	    if upper.size>0:show_data(upper[['ID','Name','Duration','YTM','VolumeE','Trade_date']],showtype)
+	    if lower.size>0:show_data(lower[['ID','Name','Duration','YTM','VolumeE','Trade_date']],showtype)
 	    fig = pyplot.figure()
 	    
 	    ax = fig.add_subplot(1,1,1)
 	    ax.set_xlabel("日期")
 	    ax.set_ylabel('YTM%')
-	    s2=ax.scatter(upper.Trade_date,upper.YTM,c='r',s=2**2,marker='X')
-	    s3=ax.scatter(lower.Trade_date,lower.YTM,c='b',s=2**2,marker='X')	    
-	    if target.size>0:
-	      s1=ax.scatter(target.Trade_date,target.YTM,c='g',s=5**2,marker='D')
-	      fig.legend(
-	    handles=(s1, s2, s3),labels=(querybond, 'longer bond', 'shorter bond'),loc='upper left',bbox_to_anchor=(0.13,0.87))
-	    else:
-	      fig.legend(
-	    handles=(s2, s3),labels=('longer bond', 'shorter bond'),loc='upper left',bbox_to_anchor=(0.13,0.87))
-	    ax.grid(axis='y')
-	    fig.autofmt_xdate(bottom=0.2, rotation=30, ha='right')   
-	    st.pyplot(fig)
+	    if upper.size>0:s2=ax.scatter(upper.Trade_date,upper.YTM,c='r',s=2**2,marker='X')
+	    if lower.size>0:s3=ax.scatter(lower.Trade_date,lower.YTM,c='b',s=2**2,marker='X')
+	    try:
+	      if target.size>0:
+	        s1=ax.scatter(target.Trade_date,target.YTM,c='g',s=5**2,marker='D')
+	        fig.legend(
+	      handles=(s1, s2, s3),labels=(querybond, 'longer bond', 'shorter bond'),loc='upper left',bbox_to_anchor=(0.13,0.87))
+	      else:
+	        fig.legend(
+	      handles=(s2, s3),labels=('longer bond', 'shorter bond'),loc='upper left',bbox_to_anchor=(0.13,0.87))
+	      ax.grid(axis='y')
+	      fig.autofmt_xdate(bottom=0.2, rotation=30, ha='right')   
+	      st.pyplot(fig)
+	    except:
+	      st.write("No graph")
 	elif querytype=='By Issuer':
-	  issuername=st.sidebar.selectbox('By Issuer',bondfromcsv.FullName.unique())
+	  issuername=st.sidebar.selectbox('By Issuer',bondfromcsv.FullName.unique()[1:])
 	  start_date=st.sidebar.slider("資料期間", min_value=0, max_value=90, value=30,step=1)
 	  first_record_date=np.datetime64((datetime.date.today()-datetime.timedelta(start_date)))
 	  if(st.sidebar.button('查詢')):	  
-	    st.table( bondfromcsv[(bondfromcsv.FullName==issuername) & (bondfromcsv['Trade_date']>=first_record_date)])
+	    show_data( bondfromcsv[(bondfromcsv.FullName==issuername) & (bondfromcsv['Trade_date']>=first_record_date)],showtype)
 	else:
 	  tenor=st.sidebar.slider("債券天期", min_value=0.0, max_value=30.0, value=(1.0,5.0),step=0.1)
 	  start_date=st.sidebar.slider("資料期間", min_value=0, max_value=90, value=30,step=1)	  
@@ -147,7 +164,7 @@ if country=='Taiwan':
 	      st.write("No trade record")
 	    else:
 	      st.subheader("近期成交記錄")
-	      st.table(target[['ID','Name','Duration','YTM','Trade_date']])    
+	      show_data(target[['ID','Name','Duration','YTM','VolumeE','Trade_date']],showtype)    
 else:
         st.title('Philippines Bond Market')
         bondtype=st.sidebar.radio('Govt/Corp?',('Govt','Corp'))
@@ -182,7 +199,7 @@ else:
            else:
               
               st.subheader("Trade record for this issue ")
-              st.table(target[['Global ID', 'Local ID', 'YRS', 'D.Vol(MM)', 'YTM','Trade_date']])
+              show_data(target[['Global ID', 'Local ID', 'YRS', 'D.Vol(MM)', 'YTM','Trade_date']],showtype)
               targetduration=target['YRS'].values[0]
               #st.write(type(targetduration))
               upper=bondfromcsv[ (bondfromcsv['YRS']>targetduration) & (bondfromcsv['YRS']<(targetduration+duration_diff)) & (bondfromcsv['Global ID']!=querybond)  & (bondfromcsv['Trade_date']>=first_record_date) ]
@@ -190,24 +207,24 @@ else:
               st.subheader("Similar tenor bond")
 	  #  col1,col2=st.beta_columns(2)
 	  #  with col1:
-	  #    st.table(upper[['ID','Name','Duration','YTM']])
+	  #    show_data(upper[['ID','Name','Duration','YTM']])
 	  #  with col2:
-	  #    st.table(lower[['ID','Name','Duration','YTM']])
-              st.table(upper[['Global ID', 'Local ID', 'YRS', 'D.Vol(MM)', 'YTM','Trade_date']])
-              st.table(lower[['Global ID', 'Local ID', 'YRS', 'D.Vol(MM)', 'YTM','Trade_date']])
-           fig = pyplot.figure()
-           ax = fig.add_subplot(1,1,1)
-           ax.set_xlabel("Date")
-           ax.set_ylabel('YTM%')
+	  #    show_data(lower[['ID','Name','Duration','YTM']])
+              show_data(upper[['Global ID', 'Local ID', 'YRS', 'D.Vol(MM)', 'YTM','Trade_date']],showtype)
+              show_data(lower[['Global ID', 'Local ID', 'YRS', 'D.Vol(MM)', 'YTM','Trade_date']],showtype)
+              fig = pyplot.figure()
+              ax = fig.add_subplot(1,1,1)
+              ax.set_xlabel("Date")
+              ax.set_ylabel('YTM%')
 	    
 	    #ax.tick_params(labelrotation=30)
-           s1=ax.scatter(target.Trade_date,target['YTM'],c='g',s=5**2,marker='D')
-           s2=ax.scatter(upper.Trade_date,upper['YTM'],c='r',s=2**2,marker='X')
-           s3=ax.scatter(lower.Trade_date,lower['YTM'],c='b',s=2**2,marker='X')
-           ax.grid(axis='y')
-           fig.autofmt_xdate(bottom=0.2, rotation=30, ha='right')
-           fig.legend(handles=(s1, s2, s3),labels=(querybond, 'longer bond', 'short bond'),loc='upper left',bbox_to_anchor=(0.13,0.87))	    
-           st.pyplot(fig)
+              s1=ax.scatter(target.Trade_date,target['YTM'],c='g',s=5**2,marker='D')
+              if upper.size>0:s2=ax.scatter(upper.Trade_date,upper['YTM'],c='r',s=2**2,marker='X')
+              if lower.size>0:s3=ax.scatter(lower.Trade_date,lower['YTM'],c='b',s=2**2,marker='X')
+              ax.grid(axis='y')
+              fig.autofmt_xdate(bottom=0.2, rotation=30, ha='right')
+              fig.legend(handles=(s1, s2, s3),labels=(querybond, 'longer bond', 'short bond'),loc='upper left',bbox_to_anchor=(0.13,0.87))	    
+              st.pyplot(fig)
         elif querytype=='By Issuer':
            issuername=st.sidebar.selectbox('By Issuer',bondfromcsv.corpname.unique())
            start_date=st.sidebar.slider("data period", min_value=0, max_value=90, value=30,step=1)
@@ -215,8 +232,8 @@ else:
            outputtable=bondfromcsv[(bondfromcsv.corpname==issuername) &(bondfromcsv['Trade_date']>=first_record_date)]
            outputtable=outputtable[['Global ID', 'Local ID', 'YRS', 'D.Vol(MM)', 'YTM','Trade_date']]
            if outputtable.size>0:         
-             #st.table( outputtable.sort_values(by='Trade_date',ascending=False))
-              st.dataframe(outputtable.sort_values(by='Trade_date',ascending=False),width=1000)
+             #show_data( outputtable.sort_values(by='Trade_date',ascending=False))
+              show_data(outputtable.sort_values(by='Trade_date',ascending=False),showtype)
            else:
              st.write("No trade record")
         else :
@@ -231,7 +248,7 @@ else:
              else:
                st.subheader("trade record")
                target=target[['Global ID', 'Local ID', 'YRS', 'D.Vol(MM)', 'YTM','Trade_date']]
-               st.table(target.sort_values(by='Trade_date',ascending=False))
+               show_data(target.sort_values(by='Trade_date',ascending=False),showtype)
 mycss()
             
 
