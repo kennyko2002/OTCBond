@@ -15,7 +15,7 @@ try:
   y['recorddate']=record
   y.to_csv('twbond',mode='a',index=False,header=False)
 except:
-  print("no data"+record.strftime("%Y%m%d"))
+  print("no data twd otc"+record.strftime("%Y%m%d"))
 #處所
 url='https://www.tpex.org.tw/storage/bond_zone/tradeinfo/govbond//' + record.strftime("%Y") + '/'+ record.strftime("%Y%m") + '/BDdcs001.'+ record.strftime("%Y%m%d") +'-C.xls'
 try:
@@ -25,7 +25,7 @@ try:
   y['Volume']=y['Volume']/100000000
   y.to_csv('twbond',mode='a',index=False,header=False)
 except:
-  print("no data"+record.strftime("%Y%m%d"))
+  print("no data twd other"+record.strftime("%Y%m%d"))
 
 
 #清單
@@ -48,7 +48,7 @@ try:
 
   df.to_csv('twcorpbondlist',mode='w',index=False,columns=['ID','Name','TimeToMaturity','Yield','Rating'])
 except:
-  print("no data"+record.strftime("%Y%m%d"))
+  print("no data twd bond list"+record.strftime("%Y%m%d"))
 #phi gov
 url='https://www.pds.com.ph/wp-content/uploads/'+record.strftime("%Y")+'/'+record.strftime("%m")+'/FI-Board-Report-as-of-'+record.strftime("%B")+'-'+record.strftime("%d")+'-'+record.strftime("%Y")+'.pdf'
 try:
@@ -60,7 +60,7 @@ try:
   df=df[df['Global ID']!='Global ID']
   df.to_csv('phigovt',mode='a',index=False,header=None)
 except:
-  print("no data"+record.strftime("%Y%m%d"))
+  print("no data phi gov"+record.strftime("%Y%m%d"))
 #phi corp
 url='https://www.pds.com.ph/wp-content/uploads/'+record.strftime("%Y")+'/'+record.strftime("%m")+'/corp_board_summary_'+record.strftime("%Y")+'-'+record.strftime("%m")+'-'+record.strftime("%d")+'.csv'
 try:
@@ -71,11 +71,11 @@ try:
   df=df.dropna(subset=['Last Yield'])    
   df.to_csv('phicorp',mode='a',index=False,header=None) 
 except:
-  print("no corp data"+record.strftime("%Y%m%d"))
+  print("no corp data phi"+record.strftime("%Y%m%d"))
 
 
 urls=['https://www.tpex.org.tw/web/bond/publish/corporate_bond_search/memo_professional.php?l=zh-tw','https://www.tpex.org.tw/web/bond/publish/corporate_bond_search/memo.php?l=zh-tw']
-os.remove("demofile.txt") 
+#os.remove("demofile.txt") 
 for url in urls:
   response = urllib.request.urlopen(url)
   html = response.read()
