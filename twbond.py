@@ -55,9 +55,12 @@ try:
   df = read_pdf(url,multiple_tables=False,pages = 'all')
   df=pd.DataFrame(df[0])
   df['recorddate']=record
-  df=df[['Global ID', 'Local ID', 'Domestic No.', 'CPN','YRS','Maturity', 'D. Vol (MM)', 'Last Yield','recorddate']]
-  df=df.dropna(subset=['Last Yield'])
-  df=df[df['Global ID']!='Global ID']
+  #df=df[['Global ID', 'Local ID', 'Domestic No.', 'CPN','YRS','Maturity', 'D. Vol (MM)', 'Last Yield','recorddate']]
+  #df=df.dropna(subset=['Last Yield'])
+  #df=df[df['Global ID']!='Global ID']
+  df=df.iloc[:,[0,1,2,3,5,6,7,8,17]]
+  df=df.dropna(subset=[df.columns[7]])
+  df=df[df[df.columns[0]]!='Global ID']
   df.to_csv('phigovt',mode='a',index=False,header=None)
 except:
   print("no data phi gov"+record.strftime("%Y%m%d"))
