@@ -91,7 +91,7 @@ for url in urls:
   y_sublists = [y[i:i+9] for i in range(0, len(y), 9)]
   yy=pd.DataFrame(y_sublists )
   yy=yy[[0,1,2]]
-  yy.to_csv('corplistpro',mode='a',index=False,header=None)
+  yy.to_csv('corplistpro',mode='w',index=False,header=None)
 
 #phi issur list
 url='https://www.pds.com.ph/wp-content/uploads/'+record.strftime("%Y")+'/'+record.strftime("%m")+'/Listed-Securities-as-of-'+record.strftime("%b")+'-'+record.strftime("%d")+'-'+record.strftime("%Y")+'.pdf'
