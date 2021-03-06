@@ -6,6 +6,12 @@ import streamlit as st
 import numpy as np
 from matplotlib import pyplot
 from matplotlib.font_manager import FontProperties
+import streamlit.components.v1 as components  # Import Streamlit
+import urllib.request
+# Render the h1 block, contained in a frame of size 200x200.
+page = open("/home/kunyi/kunyicode/phinews.html").read()
+components.html(page,width=600,height=600)
+
 st.title('台債市場交易查詢')
 bondfromcsv=pd.read_csv('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/twbond',names=['ID','Name','Duration','MaturityYear','High','Low','Average','recorddate'],parse_dates=['recorddate'],infer_datetime_format='%Y-%M-%D')
 bondfromcsv=bondfromcsv.astype({"ID":str, "Name":str})
