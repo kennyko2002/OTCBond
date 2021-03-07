@@ -9,8 +9,45 @@ from matplotlib.font_manager import FontProperties
 import streamlit.components.v1 as components  # Import Streamlit
 import urllib.request
 # Render the h1 block, contained in a frame of size 200x200.
-page = open("/home/kunyi/kunyicode/phinews.html").read()
-components.html(page,width=600,height=600)
+st.markdown("""
+
+<style>
+table td:nth-child(1) {
+    display: none
+}
+table th:nth-child(1) {
+    display: none
+}
+table .dataframe mystyle {
+    font-size: 20pt; 
+    font-family: Arial;
+    border-collapse: collapse; 
+    border: 1px solid silver;
+
+}
+
+.mystyle td, th {
+    padding: 5px;
+}
+
+.mystyle tr:nth-child(even) {
+    background: #E0E0E0;
+}
+
+.mystyle tr:hover {
+    background: silver;
+    cursor: pointer;
+}
+
+</style>
+
+
+
+""", unsafe_allow_html=True)
+
+
+page = open("phinews.html").read()
+components.html(page,width=800,height=300)
 
 st.title('台債市場交易查詢')
 bondfromcsv=pd.read_csv('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/twbond',names=['ID','Name','Duration','MaturityYear','High','Low','Average','recorddate'],parse_dates=['recorddate'],infer_datetime_format='%Y-%M-%D')
@@ -27,6 +64,7 @@ duration_diff=st.sidebar.slider("存續期間差異", min_value=0.0, max_value=5
 start_date=st.sidebar.slider("資料期間", min_value=0, max_value=90, value=30,step=1)
 
 st.markdown("""
+<link rel="stylesheet" type="text/css" href="style.css"/>
 <style>
 table td:nth-child(1) {
     display: none
@@ -89,4 +127,39 @@ if (st.sidebar.button('查詢')):
     
     
     st.pyplot(fig)
+    st.markdown("""
+
+<style>
+table td:nth-child(1) {
+    display: none
+}
+table th:nth-child(1) {
+    display: none
+}
+table .dataframe mystyle {
+    font-size: 20pt; 
+    font-family: Arial;
+    border-collapse: collapse; 
+    border: 1px solid silver;
+
+}
+
+.mystyle td, th {
+    padding: 5px;
+}
+
+.mystyle tr:nth-child(even) {
+    background: #E0E0E0;
+}
+
+.mystyle tr:hover {
+    background: silver;
+    cursor: pointer;
+}
+
+</style>
+
+
+
+""", unsafe_allow_html=True)
    

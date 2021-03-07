@@ -6,6 +6,7 @@ import streamlit as st
 import numpy as np
 from matplotlib import pyplot
 from matplotlib.font_manager import FontProperties
+import streamlit.components.v1 as components
 showtype = st.sidebar.radio('Present in ?', ('Table', 'Dataframe'))
 country = st.sidebar.radio('Which country?', ('Taiwan', 'Philippines'))
 issuername = ''
@@ -35,8 +36,7 @@ table {
 background:white;
 background:#EBF7E3;
 border-radius:50px; 
-font-weight:bold;2.5000	Feb 19, 2021
-A09102	109央債甲2	17.6100	0.5704	4.5000
+font-weight:bold;
 white-space:nowrap;
 	}
 .css-1aumxhk {
@@ -206,6 +206,12 @@ if country == 'Taiwan':
                                   'YTM', 'VolumeE', 'Trade_date']], showtype)
 else:
     st.title('Philippines Bond Market')
+    st.header('Business News')
+    page = open("phinews.html").read()
+    components.html(page,width=800,height=400)
+    st.header('Bond News')
+    page = open("phibondnews.html").read()
+    components.html(page,width=800,height=400)    
     bondtype = st.sidebar.radio('Govt/Corp?', ('Govt', 'Corp'))
     if bondtype == 'Govt':
         bondfromcsv = st.cache(pd.read_csv)('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/phigovt', thousands=r',', names=[
