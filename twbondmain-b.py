@@ -9,43 +9,21 @@ from matplotlib.font_manager import FontProperties
 import streamlit.components.v1 as components  # Import Streamlit
 import urllib.request
 # Render the h1 block, contained in a frame of size 200x200.
-st.markdown("""
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown('<style>{}</style>'.format(f.read()), unsafe_allow_html=True)
 
-<style>
-table td:nth-child(1) {
-    display: none
-}
-table th:nth-child(1) {
-    display: none
-}
-table .dataframe mystyle {
-    font-size: 20pt; 
-    font-family: Arial;
-    border-collapse: collapse; 
-    border: 1px solid silver;
+def remote_css(url):
+    st.markdown('<style src="{}"></style>'.format(url), unsafe_allow_html=True)
 
-}
+def icon_css(icone_name):
+    remote_css('https://fonts.googleapis.com/icon?family=Material+Icons')
 
-.mystyle td, th {
-    padding: 5px;
-}
-
-.mystyle tr:nth-child(even) {
-    background: #E0E0E0;
-}
-
-.mystyle tr:hover {
-    background: silver;
-    cursor: pointer;
-}
-
-</style>
+def icon(icon_name):
+    st.markdown('<i class="material-icons">{}</i>'.format(icon_name), unsafe_allow_html=True)
 
 
-
-""", unsafe_allow_html=True)
-
-
+local_css('style.css')
 page = open("phinews.html").read()
 components.html(page,width=800,height=300)
 
@@ -63,17 +41,7 @@ querybond=st.sidebar.text_input('請輸入券號')
 duration_diff=st.sidebar.slider("存續期間差異", min_value=0.0, max_value=5.0, value=1.0,step=0.1)
 start_date=st.sidebar.slider("資料期間", min_value=0, max_value=90, value=30,step=1)
 
-st.markdown("""
-<link rel="stylesheet" type="text/css" href="style.css"/>
-<style>
-table td:nth-child(1) {
-    display: none
-}
-table th:nth-child(1) {
-    display: none
-}
-</style>
-""", unsafe_allow_html=True)
+
 
 
 if (st.sidebar.button('查詢')):   
@@ -127,39 +95,4 @@ if (st.sidebar.button('查詢')):
     
     
     st.pyplot(fig)
-    st.markdown("""
 
-<style>
-table td:nth-child(1) {
-    display: none
-}
-table th:nth-child(1) {
-    display: none
-}
-table .dataframe mystyle {
-    font-size: 20pt; 
-    font-family: Arial;
-    border-collapse: collapse; 
-    border: 1px solid silver;
-
-}
-
-.mystyle td, th {
-    padding: 5px;
-}
-
-.mystyle tr:nth-child(even) {
-    background: #E0E0E0;
-}
-
-.mystyle tr:hover {
-    background: silver;
-    cursor: pointer;
-}
-
-</style>
-
-
-
-""", unsafe_allow_html=True)
-   

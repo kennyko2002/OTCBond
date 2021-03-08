@@ -7,6 +7,22 @@ import numpy as np
 from matplotlib import pyplot
 from matplotlib.font_manager import FontProperties
 import streamlit.components.v1 as components
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown('<style>{}</style>'.format(f.read()), unsafe_allow_html=True)
+
+def remote_css(url):
+    st.markdown('<style src="{}"></style>'.format(url), unsafe_allow_html=True)
+
+def icon_css(icone_name):
+    remote_css('https://fonts.googleapis.com/icon?family=Material+Icons')
+
+def icon(icon_name):
+    st.markdown('<i class="material-icons">{}</i>'.format(icon_name), unsafe_allow_html=True)
+
+
+local_css('style.css')
+
 showtype = st.sidebar.radio('Present in ?', ('Table', 'Dataframe'))
 country = st.sidebar.radio('Which country?', ('Taiwan', 'Philippines'))
 issuername = ''
