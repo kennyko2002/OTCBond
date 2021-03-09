@@ -4,6 +4,7 @@ import pandas as pd
 import sys
 import streamlit as st
 import numpy as np
+import urllib.request
 from matplotlib import pyplot
 from matplotlib.font_manager import FontProperties
 import streamlit.components.v1 as components
@@ -223,11 +224,11 @@ if country == 'Taiwan':
 else:
     st.title('Philippines Bond Market')
     st.header('Business News')
-    page = open('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/phinews.html').read()
+    page=urllib.request.urlopen('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/phinews.html').read()    
     components.html(page,width=800,height=400)
     st.header('Bond News')
-    page = open('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/phibondnews.html').read()
-    components.html(page,width=800,height=400)    
+    page2=urllib.request.urlopen('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/phibondnews.html').read()
+    components.html(page2,width=800,height=400)    
     bondtype = st.sidebar.radio('Govt/Corp?', ('Govt', 'Corp'))
     if bondtype == 'Govt':
         bondfromcsv = st.cache(pd.read_csv)('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/phigovt', thousands=r',', names=[
