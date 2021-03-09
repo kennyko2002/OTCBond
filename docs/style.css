@@ -12,7 +12,8 @@
 
 
 table {
-    font-size: 12pt; 
+    font-size: 1em; 
+    font-weight:bold;
     font-family: Arial;
     border-collapse: collapse; 
     border: 1px solid silver;
