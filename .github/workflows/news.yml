@@ -51,7 +51,6 @@ jobs:
       - name: get news
         run: |
           ls -la
-          cd otcbond/
           python phinews.py
       # git 提交文件
       - name: Commit files
