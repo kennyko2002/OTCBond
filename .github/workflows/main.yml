@@ -49,7 +49,7 @@ jobs:
       # 执行python脚本
       - name: get news
         run: python phinews.py
-	  # git 提交文件
+      # git 提交文件
       - name: Commit files
         run: |
           git config --local user.email "meowla2.kk@gmail.com"
