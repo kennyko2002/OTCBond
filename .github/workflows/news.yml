@@ -45,7 +45,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip          
-          if [ -f requirements.txt ]; then pip install -r requirements.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt;fi
       # 执行python脚本
       - name: get news
         run: python phinews.py
