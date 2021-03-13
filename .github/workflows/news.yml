@@ -57,9 +57,8 @@ jobs:
         run: |
           git config --local user.email "meowla2.kk@gmail.com"
           git config --local user.name "kennyko2002"
-          status_log=$(git status -sb)
-      # 這裡使用的是 master 分支，根據需求自行修改
-          if [ "$status_log" == "## master...origin/master" ];then
+          status_log=
+          if  "git status -sb" == "## master...origin/master" ;then
             echo "nothing to commit, working tree clean"
           else
           git add .
