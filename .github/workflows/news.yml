@@ -58,12 +58,5 @@ jobs:
         run: |
           git config --local user.email "meowla2.kk@gmail.com"
           git config --local user.name "kennyko2002"
-          status_log=
-          if  "git status -sb" == "## master...origin/master" ;then
-            echo "nothing to commit, working tree clean"
-          else
-          git add .
-          git commit -m "`action '+%Y-%m-%d %H:%M:%S'`" #动态提交信息
-          git push origin master
-          fi
-
+      - name: run script
+        run: chmod +x ./update-repo.sh&&./update-repo.sh
