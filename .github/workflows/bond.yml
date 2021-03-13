@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: news daily
+name: bond daily
 
 # Controls when the action will run. 
 on:
@@ -52,11 +52,6 @@ jobs:
         run: |
           ls -la
           python twbond.py
-      # git 提交文件
-      - name: Commit files
-        run: |
-          git config --local user.email "meowla2.kk@gmail.com"
-          git config --local user.name "kennyko2002"
       # git 提交文件
       - name: Commit files
         run: |
