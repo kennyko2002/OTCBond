@@ -95,10 +95,10 @@ if country == 'Taiwan':
     bondfromcsv = st.cache(pd.read_csv)('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/twbond', names=[
         'ID', 'Name', 'Duration', 'MaturityYear', 'High', 'YTM', 'VolumeE', 'Trade_date'], thousands=r',', parse_dates=['Trade_date'], infer_datetime_format='%Y-%M-%D')
     bondfromcsv = bondfromcsv.astype({"ID": str, "Name": str})
-    twgovbondlist = st.cache(pd.read_csv)('twgovbondlist')
-    twcorpbondlist = st.cache(pd.read_csv)('twcorpbondlist')
+    twgovbondlist = st.cache(pd.read_csv)('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/twgovbondlist')
+    twcorpbondlist = st.cache(pd.read_csv)('https://raw.githubusercontent.com/kennyko2002/OTCBond/master/twcorpbondlist')
     corplistpro = st.cache(pd.read_csv)(
-        'corplistpro', names=['ID', 'Ticker', 'FullName'])
+        'https://raw.githubusercontent.com/kennyko2002/OTCBond/master/corplistpro', names=['ID', 'Ticker', 'FullName'])
 
     bondfromcsv = pd.merge(bondfromcsv, twcorpbondlist, how='left', on='ID')
     bondfromcsv = pd.merge(bondfromcsv, corplistpro, how='left', on='ID')
