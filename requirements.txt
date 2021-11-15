@@ -58,7 +58,6 @@ pydeck==0.5.0
 pyecharts==1.9.0
 Pygments==2.7.3
 pyparsing==2.4.7
-PyPtt==0.9.40
 pyrsistent==0.17.3
 python-dateutil==2.8.1
 python-utils==2.4.0
